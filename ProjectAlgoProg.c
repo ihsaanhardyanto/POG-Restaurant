@@ -11,6 +11,14 @@ struct menuList
     int price;
 } list[MAX];
 
+int comparator(const void *a, const void *b)
+{
+    struct menuList *listA = (struct menuList *) a;
+    struct menuList *listB = (struct menuList *) b;
+
+    return strcmp(listA->name, listB->name);
+}
+
 void welcome()
 {
     puts(" __          __  _                          _ ");
@@ -42,6 +50,8 @@ void readMenu()
         count++;
     }
     fclose(fr);
+
+    qsort(list->name, count, sizeof(struct menuList), comparator);
 
     int count2 = 0;
     printf(" _________________________________________\n");
