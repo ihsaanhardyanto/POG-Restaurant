@@ -7,7 +7,6 @@
 
 struct menuList
 {
-    int no;
     char name[MAX];
     int price;
 } list[MAX];
@@ -36,7 +35,6 @@ void readMenu()
     char buff[MAX];
     int count = 0;
     while (fgets(buff, MAX, fr) != NULL) {
-        list[count].no = count+1;
         char * token = strtok(buff, "#");
         strcpy(list[count].name, token);
         token = strtok(NULL, "\n");
@@ -51,7 +49,7 @@ void readMenu()
     printf("|_____|______________________|____________|\n");
     while (count > 0)
     {
-        printf("| %-3d | %-20s | %-10d |\n", list[count2].no, list[count2].name, list[count2].price);
+        printf("| %-3d | %-20s | %-10d |\n", count2+1, list[count2].name, list[count2].price);
         count--;
         count2++;
     }
