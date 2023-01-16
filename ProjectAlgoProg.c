@@ -11,10 +11,17 @@ struct menuList
     int price;
 } list[MAX];
 
+struct saveOrder
+{
+    char name[MAX];
+    int price;
+    int total;
+} saveOrder[MAX];
+
 int comparator(const void *a, const void *b)
 {
-    struct menuList *listA = (struct menuList *) a;
-    struct menuList *listB = (struct menuList *) b;
+    struct menuList *listA = (struct menuList *)a;
+    struct menuList *listB = (struct menuList *)b;
 
     return strcmp(listA->name, listB->name);
 }
@@ -42,8 +49,9 @@ void readMenu()
 
     char buff[MAX];
     int count = 0;
-    while (fgets(buff, MAX, fr) != NULL) {
-        char * token = strtok(buff, "#");
+    while (fgets(buff, MAX, fr) != NULL)
+    {
+        char *token = strtok(buff, "#");
         strcpy(list[count].name, token);
         token = strtok(NULL, "\n");
         list[count].price = atoi(token);
@@ -59,7 +67,7 @@ void readMenu()
     printf("|_____|______________________|____________|\n");
     while (count > 0)
     {
-        printf("| %-3d | %-20s | %-10d |\n", count2+1, list[count2].name, list[count2].price);
+        printf("| %-3d | %-20s | %-10d |\n", count2 + 1, list[count2].name, list[count2].price);
         count--;
         count2++;
     }
@@ -76,11 +84,12 @@ void writeMenu(char *name, char *price)
         printf("ERROR!");
         return;
     }
-    
+
     fprintf(fp, "%s#%s\n", name, price);
     fclose(fp);
     printf("Menu has been added\n");
-    printf("Press ENTER to continue..."); getchar();
+    printf("Press ENTER to continue...");
+    getchar();
 }
 
 int mainMenu()
@@ -92,41 +101,88 @@ int mainMenu()
     printf("2. Cart\n");
     printf("3. Exit\n");
     printf(">> ");
-    scanf("%d", &menu); getchar();
+    scanf("%d", &menu);
+    getchar();
 
     return menu;
 }
 
 void order()
 {
+    int pilihan;
+    int count2 = 0;
     readMenu();
     printf("Type your order(1-8)\n");
     printf("press '0' to go back\n");
     printf(">> ");
-    getchar();
+    while (pilihan != 0)
+    {
+        scanf("%d", &pilihan);
+        getchar();
+        if (pilihan == 1)
+        {
+            strcpy(saveOrder[0].name, list[0].name);
+            saveOrder->total += 10000;
+        }
+        if (pilihan == 2)
+        {
+            saveOrder->total += 15000;
+        }
+        if (pilihan == 3)
+        {
+            saveOrder->total += 18000;
+        }
+        if (pilihan == 4)
+        {
+            saveOrder->total += 13000;
+        }
+        if (pilihan == 5)
+        {
+            saveOrder->total += 10000;
+        }
+        if (pilihan == 6)
+        {
+            saveOrder->total += 12000;
+        }
+        if (pilihan == 7)
+        {
+            saveOrder->total += 20000;
+        }
+        if (pilihan == 8)
+        {
+            saveOrder->total += 18000;
+        }
+    }
 }
 
 void readOrder()
 {
-    //Kosong
+    // Kosong
 }
 
 void cart()
 {
-    // readOrder();
+    int count = 0;
+    int count2 = 0;
+    readOrder();
     printf(" _________________________________________\n");
     printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
     printf("|_____|______________________|____________|\n");
     // ISI MENU YANG DIPESAN
+    while (count > 0)
+    {
+        printf("| %-3s | %-20s | %-10d |\n", count2 + 1, saveOrder[count2].name, saveOrder[count2].price);
+        count--;
+        count2++;
+    }
 
     printf("|_____|______________________|____________|\n");
-    printf("| %11s %16s %-10s |\n", "Total", "|", "20");
+    printf("| %11s %16s %-10d |\n", "Total", "|", saveOrder->total);
     printf("|____________________________|____________|\n");
     printf("1. Pay\n");
     printf("2. Back\n");
     printf(">> ");
     getchar();
-
 }
 
 void adminMenu()
@@ -138,37 +194,40 @@ void adminMenu()
     printf("2. Remove Menu\n");
     printf("3. Exit\n");
     printf(">> ");
-    scanf("%d", &menu2); getchar();
+    scanf("%d", &menu2);
+    getchar();
     switch (menu2)
     {
-        case 1:
-        {
-            //! Write this in separate function
-            char name[MAX];
-            char price[MAX];
-            system("cls");
-            printf("Menu Name: ");
-            scanf("%[^\n]", name); getchar();
-            printf("Menu Price: ");
-            scanf("%s", price); getchar();
-            writeMenu(name, price);
-            break;
-        }
-        
-        case 2:
-        {
-            // TODO: Add option to remove menu
-        }
+    case 1:
+    {
+        //! Write this in separate function
+        char name[MAX];
+        char price[MAX];
+        system("cls");
+        printf("Menu Name: ");
+        scanf("%[^\n]", name);
+        getchar();
+        printf("Menu Price: ");
+        scanf("%s", price);
+        getchar();
+        writeMenu(name, price);
+        break;
+    }
 
-        case 3:
-        {
-            // TODO: Go back to the main menu
-        }
+    case 2:
+    {
+        // TODO: Add option to remove menu
+    }
 
-        default:
-        {
-            break;
-        }
+    case 3:
+    {
+        // TODO: Go back to the main menu
+    }
+
+    default:
+    {
+        break;
+    }
     }
 }
 
@@ -179,41 +238,42 @@ int main()
     {
         switch (mainMenu())
         {
-            case 1:
-            {
-                system("cls");
-                order();
-                break;
-            }
-            
-            case 2:
-            {
-                system("cls");
-                cart();
-                // TODO: Check ordered food and total price
-                break;
-            }
-
-            case 3:
-            {
-                system("cls");
-                // TODO: Add patorjk.com ascii text
-                printf("Terimakasih sudah berkunjung!"); getchar();
-                break;
-            }
-
-            case 123:
-            {
-                adminMenu();
-                break;
-            }
-
-            default:
-            {
-                //! Admin Menu is not finished, check the function
-                break;
-            }
+        case 1:
+        {
+            system("cls");
+            order();
+            break;
         }
-    } while (menu != 3);   
+
+        case 2:
+        {
+            system("cls");
+            cart();
+            // TODO: Check ordered food and total price
+            break;
+        }
+
+        case 3:
+        {
+            system("cls");
+            // TODO: Add patorjk.com ascii text
+            printf("Terimakasih sudah berkunjung!");
+            getchar();
+            break;
+        }
+
+        case 123:
+        {
+            adminMenu();
+            break;
+        }
+
+        default:
+        {
+            //! Admin Menu is not finished, check the function
+            break;
+        }
+        }
+    } while (menu != 3);
     return 0;
 }
