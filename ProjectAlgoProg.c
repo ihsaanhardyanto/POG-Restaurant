@@ -115,6 +115,7 @@ void order()
     printf("Type your order(1-8)\n");
     printf("press '0' to go back\n");
     printf(">> ");
+    /* Ini salah, tinggal pindahin saveOrder yang dipilih */
     while (pilihan != 0)
     {
         scanf("%d", &pilihan);
@@ -163,12 +164,14 @@ void readOrder()
 void cart()
 {
     int count = 0;
+    int pilihan, jmlhByr;
     int count2 = 0;
     readOrder();
     printf(" _________________________________________\n");
     printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
     printf("|_____|______________________|____________|\n");
-    // ISI MENU YANG DIPESAN
+
+    /* Line 172 - 179 belum selesai */
     while (count > 0)
     {
         printf("| %-3s | %-20s | %-10d |\n", count2 + 1, saveOrder[count2].name, saveOrder[count2].price);
@@ -182,7 +185,26 @@ void cart()
     printf("1. Pay\n");
     printf("2. Back\n");
     printf(">> ");
+    scanf("%d", &pilihan);
     getchar();
+    if(pilihan == 1)
+    {
+        printf("\nMasukan jumlah uang\n");
+        printf(">> ");
+        scanf("%d", &jmlhByr);
+        if(saveOrder->total > jmlhByr)
+            printf("Uang kamu tidak cukup\n");
+        else
+        {
+            printf("Pembayaran berhasil!\n");
+            if(jmlhByr > saveOrder->total)
+            {
+                saveOrder->total = jmlhByr - saveOrder->total;
+                printf("Uang kamu sisa: Rp.%d\n", saveOrder->total);
+            }
+            saveOrder->total = 0;
+        }
+    }
 }
 
 void adminMenu()
