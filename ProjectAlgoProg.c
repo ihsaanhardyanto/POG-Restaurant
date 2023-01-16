@@ -106,6 +106,29 @@ void order()
     getchar();
 }
 
+void readOrder()
+{
+    //Kosong
+}
+
+void cart()
+{
+    // readOrder();
+    printf(" _________________________________________\n");
+    printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
+    printf("|_____|______________________|____________|\n");
+    // ISI MENU YANG DIPESAN
+
+    printf("|_____|______________________|____________|\n");
+    printf("| %11s %16s %-10s |\n", "Total", "|", "20");
+    printf("|____________________________|____________|\n");
+    printf("1. Pay\n");
+    printf("2. Back\n");
+    printf(">> ");
+    getchar();
+
+}
+
 void adminMenu()
 {
     int menu2;
@@ -166,6 +189,7 @@ int main()
             case 2:
             {
                 system("cls");
+                cart();
                 // TODO: Check ordered food and total price
                 break;
             }
