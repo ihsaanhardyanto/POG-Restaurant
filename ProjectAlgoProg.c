@@ -62,10 +62,10 @@ void welcome()
 }
 
 int i, j, k; 
-int sizeN;
+int sizeMenu = 0;
 int sizeOrder = 0;
 
-void readMenu()
+void initMenu()
 {
     FILE *fr;
     fr = fopen("Menu.txt", "r");
@@ -87,20 +87,23 @@ void readMenu()
         count++;
     }
     fclose(fr);
+    sizeMenu = count;
+}
 
-    qsort(list->name, count, sizeof(struct menuList), comparator);
+void readMenu()
+{
+    qsort(list->name, sizeMenu, sizeof(struct menuList), comparator);
 
     printf(" _________________________________________\n");
     printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
     printf("|_____|______________________|____________|\n");
-    for (i = 0; i < count; i++)
+    for (i = 0; i < sizeMenu; i++)
     {
         printf("| %-3d | %-20s | %-10d |\n", i + 1, list[i].name, list[i].price);
     }
     printf("|_____|______________________|____________|\n\n");
 
     getchar();
-    sizeN = count;
 }
 
 void writeMenu(char *name, char *price)
@@ -218,19 +221,15 @@ void order()
         search(temp);
     }
 
-    strcat(temp,"\n");
-
-    for (i = 0; i < sizeN; i++)
+    for (i = 0; i < sizeMenu; i++)
     {
-        if (strcmp(temp, list[i].name) == 1)
+        if (strncmp(temp, list[i].name, strlen(temp)) == 0)
         {
             strcpy(saveOrder[i].name, list[i].name);
             saveOrder[i].price = list[i].price;
             sizeOrder++;
-            printf("A"); getchar();
         }
     }
-    printf("\n\n%d", strcmp(temp, list[i].name));getchar();
 }
 
 void cart()
@@ -243,12 +242,12 @@ void cart()
 
     for (i = 0; i < sizeOrder; i++)
     {
-        printf("| %-3s | %-20s | %-10d |\n", i + 1, saveOrder[i].name, saveOrder[i].price);
+        printf("| %-3d | %-20s | %-10d |\n", i + 1, saveOrder[i].name, saveOrder[i].price);
         total += saveOrder[i].price;
     }
 
     printf("|_____|______________________|____________|\n");
-    printf("| %-11s %-16s %-10d |\n", "Total", "|", total);
+    printf("| %-26s | %-10d |\n", "Total", total);
     printf("|____________________________|____________|\n");
     printf("1. Pay\n");
     printf("2. Back\n");
@@ -323,6 +322,7 @@ void adminMenu()
 
 int main()
 {
+    initMenu();
     int menu;
     do
     {
@@ -355,6 +355,7 @@ int main()
             // TODO: Add patorjk.com ascii text
             printf("Terimakasih sudah berkunjung!");
             getchar();
+            menu = 4;
             break;
         }
 
