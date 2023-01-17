@@ -19,6 +19,8 @@ struct saveOrder
     int price;
 } saveOrder[MAX];
 
+static const struct saveOrder EmptyStruct;
+
 int comparator(const void *a, const void *b)
 {
     struct menuList *listA = (struct menuList *)a;
@@ -300,8 +302,16 @@ void order()
 
 void cart()
 {
-    int pilihan, jmlhByr;
+    int pilihan;
+    int jmlhByr = 0;
     int total = 0;
+
+    if (sizeOrder == 0)
+    {
+        printf("Cart kosong!"); getchar();
+        return;
+    }
+
     printf(" _________________________________________\n");
     printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
     printf("|_____|______________________|____________|\n");
@@ -312,31 +322,37 @@ void cart()
         total += saveOrder[i].price;
     }
 
-
     printf("|_____|______________________|____________|\n");
     printf("| %-26s | %-10d |\n", "Total", total);
     printf("|____________________________|____________|\n");
     printf("1. Pay\n");
     printf("2. Back\n");
     printf(">> ");
-    scanf("%d", &pilihan);
-    getchar();
+    scanf("%d", &pilihan); getchar();
+
     if(pilihan == 1)
     {
         printf("\nMasukan jumlah uang\n");
         printf(">> ");
-        scanf("%d", &jmlhByr);
+        scanf("%d", &jmlhByr); getchar();
         if(total > jmlhByr)
-            printf("Uang kamu tidak cukup\n");
+        {
+            printf("\nUang kamu tidak cukup!\n"); getchar();
+        }
         else
         {
-            printf("Pembayaran berhasil!\n");
+            printf("\nPembayaran berhasil!\n");
             if(jmlhByr > total)
             {
                 total = jmlhByr - total;
-                printf("Uang kamu sisa: Rp.%d\n", total);
+                printf("Uang kembalian kamu: Rp.%d\n", total);
+
+                for (i = 0; i < sizeOrder; i++)
+                    saveOrder[i] = EmptyStruct;
+                
+                sizeOrder = 0;
             }
-            total = 0;
+            getchar();
         }
     }
 }
