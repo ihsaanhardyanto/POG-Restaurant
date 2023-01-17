@@ -15,3 +15,5 @@ Kepiting Lada Hitam#102500
 Cumi Goreng Tepung#65000
 Udang Goreng Tepung#75000
 Ribeye Steak#47500
+Beef Steak#65000
+Risotto#45000
