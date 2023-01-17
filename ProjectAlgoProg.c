@@ -92,18 +92,83 @@ void initMenu()
 
 void readMenu()
 {
+    int page = 1;
+    int count = 0;
+    char c;
+
     qsort(list->name, sizeMenu, sizeof(struct menuList), comparator);
 
-    printf(" _________________________________________\n");
-    printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
-    printf("|_____|______________________|____________|\n");
-    for (i = 0; i < sizeMenu || i >= 9; i++)
+    for (i = 0; i < sizeMenu && count < sizeMenu; i++, count++)
     {
-        printf("| %-3d | %-20s | %-10d |\n", i + 1, list[i].name, list[i].price);
+        if (i == 0)
+        {
+            system("cls");
+            printf(" _________________________________________\n");
+            printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
+            printf("|_____|______________________|____________|\n");
+        }
+        
+        printf("| %-3d | %-20s | %-10d |\n", count + 1, list[count].name, list[count].price);
+        
+        if (i == 9)
+        {
+            printf("|_____|______________________|____________|\n\n");
+            
+            do
+            {
+                if (count == 9)
+                {
+                    printf("Press '>' to go to page %d\n", page+1);
+                    printf("Press '0' to go back\n");
+                    scanf("%c", &c); getchar();
+                    if (c == '>')
+                    {
+                        i = -1;
+                        page++;
+                        break;
+                    }
+                    else if (c == '0') break;
+                }
+                else if (i == 9 && count > 9)
+                {
+                    char c;
+                    printf("Press '<' to go to page %d\n", page-1);
+                    printf("Press '>' to go to page %d\n", page+1);
+                    printf("Press '0' to go back\n");
+                    scanf("%c", &c); getchar();
+                    if (c == '>')
+                    {
+                        i = -1;
+                        page++;
+                        break;
+                    }
+                    else if (c == '<')
+                    {
+                        i = -1;
+                        page--;
+                        count -= 20;
+                        break;
+                    }
+                    else if (c == '0') break;
+                }    
+            } while (true);
+        }
+        if (c == '0') break;
+        else if (count+1 == sizeMenu)
+        {
+            printf("|_____|______________________|____________|\n\n");
+            printf("Press '<' to go to page %d\n", page-1);
+            printf("Press '0' to go back\n");
+            scanf("%c", &c); getchar();
+            if (c == '<')
+            {
+                i = -1;
+                page--;
+                count -= (10 + sizeMenu % 10);
+            }
+            else if (c == '0') break;
+        }
     }
-    printf("|_____|______________________|____________|\n\n");
-
-    getchar();
 }
 
 void writeMenu(char *name, char *price)
