@@ -6,7 +6,7 @@ Nasi Gurih#10000
 Nasi Goreng Kampung#13000
 Soto Betawi#20000
 Soto Makassar#18000
-Ayam lada hitam#23000
+Ayam Lada Hitam#23000
 Sup Iga Bakar#75000
 Sup Ayam#27500
 Kerang Rebus#15000
