@@ -2,8 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <conio.h>
+#include <ctype.h>
 
-#define MAX 256
+#define MAX 255
 
 struct menuList
 {
@@ -15,7 +17,6 @@ struct saveOrder
 {
     char name[MAX];
     int price;
-    int total;
 } saveOrder[MAX];
 
 int comparator(const void *a, const void *b)
@@ -24,6 +25,30 @@ int comparator(const void *a, const void *b)
     struct menuList *listB = (struct menuList *)b;
 
     return strcmp(listA->name, listB->name);
+}
+
+int stringComparator(const void *a, const void *b)
+{
+    return strcmp((char *)a, (char *)b);
+}
+
+char *strcasestr(const char *str, const char *pattern) {
+    size_t i;
+
+    if (!*pattern)
+        return (char*)str;
+
+    for (; *str; str++) {
+        if (toupper((unsigned char)*str) == toupper((unsigned char)*pattern)) {
+            for (i = 1;; i++) {
+                if (!pattern[i])
+                    return (char*)str;
+                if (toupper((unsigned char)str[i]) != toupper((unsigned char)pattern[i]))
+                    break;
+            }
+        }
+    }
+    return NULL;
 }
 
 void welcome()
@@ -35,6 +60,10 @@ void welcome()
     puts("    \\  /\\  /  __/ | (_| (_) | | | | | |  __/_|");
     puts("     \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___(_)");
 }
+
+int i, j, k; 
+int sizeN;
+int sizeOrder = 0;
 
 void readMenu()
 {
@@ -61,17 +90,17 @@ void readMenu()
 
     qsort(list->name, count, sizeof(struct menuList), comparator);
 
-    int count2 = 0;
     printf(" _________________________________________\n");
     printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
     printf("|_____|______________________|____________|\n");
-    while (count > 0)
+    for (i = 0; i < count; i++)
     {
-        printf("| %-3d | %-20s | %-10d |\n", count2 + 1, list[count2].name, list[count2].price);
-        count--;
-        count2++;
+        printf("| %-3d | %-20s | %-10d |\n", i + 1, list[i].name, list[i].price);
     }
     printf("|_____|______________________|____________|\n\n");
+
+    getchar();
+    sizeN = count;
 }
 
 void writeMenu(char *name, char *price)
@@ -98,8 +127,9 @@ int mainMenu()
     welcome();
     printf("\nXYZ Restaurant\n");
     printf("1. Menu\n");
-    printf("2. Cart\n");
-    printf("3. Exit\n");
+    printf("2. Order\n");
+    printf("3. Cart\n");
+    printf("4. Exit\n");
     printf(">> ");
     scanf("%d", &menu);
     getchar();
@@ -107,80 +137,118 @@ int mainMenu()
     return menu;
 }
 
-void order()
-{
-    int pilihan;
+int search(char *sub) {
+    char str[MAX][MAX];
+    char found[MAX][MAX];
+    char temp[MAX];
+    int count = 0;
     int count2 = 0;
-    readMenu();
-    printf("Type your order(1-8)\n");
-    printf("press '0' to go back\n");
-    printf(">> ");
-    /* Ini salah, tinggal pindahin saveOrder yang dipilih */
-    while (pilihan != 0)
+    int i;
+    int j;
+
+    system("cls");
+
+    printf("search >> %s", sub);
+
+    printf("\nResults:\n");
+
+    FILE *fr;
+
+    fr = fopen("Menu.txt","r");
+
+    if (!fr)
     {
-        scanf("%d", &pilihan);
-        getchar();
-        if (pilihan == 1)
+        printf("ERROR");
+        return 1;
+    }
+
+    char buff[MAX];
+    while (fgets(buff, MAX, fr) != NULL) {
+        char *token = strtok(buff, "#");
+        
+        strcpy(str[count], token);
+        count++;
+    }
+
+    fclose(fr);
+
+    for (i = 0; i < count; i++)
+    {
+        if (strcasestr(str[i], sub))
         {
-            strcpy(saveOrder[0].name, list[0].name);
-            saveOrder->total += 10000;
-        }
-        if (pilihan == 2)
-        {
-            saveOrder->total += 15000;
-        }
-        if (pilihan == 3)
-        {
-            saveOrder->total += 18000;
-        }
-        if (pilihan == 4)
-        {
-            saveOrder->total += 13000;
-        }
-        if (pilihan == 5)
-        {
-            saveOrder->total += 10000;
-        }
-        if (pilihan == 6)
-        {
-            saveOrder->total += 12000;
-        }
-        if (pilihan == 7)
-        {
-            saveOrder->total += 20000;
-        }
-        if (pilihan == 8)
-        {
-            saveOrder->total += 18000;
+            strcpy(found[count2], str[i]);
+            count2++;
         }
     }
+
+    qsort(found, count2, sizeof(found[0]), stringComparator);
+
+    for (i = 0; i < count2 && i < 5; i++)
+    {
+        printf("%d. %s\n", i+1, found[i]);
+    }
+
+    return 0;
 }
 
-void readOrder()
+void order()
 {
-    // Kosong
+    system("cls");
+
+    char ch;
+    char temp[MAX] = {'\0'};
+    search(temp);
+    for (i = 0; (ch = getch()) != 13; i++)
+    {
+        if (ch != 8)
+        {
+            temp[i] = ch;
+        }
+        else if (temp[0] != '\0')
+        {
+            printf("\b \b");
+            i--;
+            temp[i] = '\0';
+            i--;
+        }
+        else
+        {
+            i--;
+        }
+        search(temp);
+    }
+
+    strcat(temp,"\n");
+
+    for (i = 0; i < sizeN; i++)
+    {
+        if (strcmp(temp, list[i].name) == 1)
+        {
+            strcpy(saveOrder[i].name, list[i].name);
+            saveOrder[i].price = list[i].price;
+            sizeOrder++;
+            printf("A"); getchar();
+        }
+    }
+    printf("\n\n%d", strcmp(temp, list[i].name));getchar();
 }
 
 void cart()
 {
-    int count = 0;
     int pilihan, jmlhByr;
-    int count2 = 0;
-    readOrder();
+    int total = 0;
     printf(" _________________________________________\n");
     printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
     printf("|_____|______________________|____________|\n");
 
-    /* Line 172 - 179 belum selesai */
-    while (count > 0)
+    for (i = 0; i < sizeOrder; i++)
     {
-        printf("| %-3s | %-20s | %-10d |\n", count2 + 1, saveOrder[count2].name, saveOrder[count2].price);
-        count--;
-        count2++;
+        printf("| %-3s | %-20s | %-10d |\n", i + 1, saveOrder[i].name, saveOrder[i].price);
+        total += saveOrder[i].price;
     }
 
     printf("|_____|______________________|____________|\n");
-    printf("| %11s %16s %-10d |\n", "Total", "|", saveOrder->total);
+    printf("| %-11s %-16s %-10d |\n", "Total", "|", total);
     printf("|____________________________|____________|\n");
     printf("1. Pay\n");
     printf("2. Back\n");
@@ -192,17 +260,17 @@ void cart()
         printf("\nMasukan jumlah uang\n");
         printf(">> ");
         scanf("%d", &jmlhByr);
-        if(saveOrder->total > jmlhByr)
+        if(total > jmlhByr)
             printf("Uang kamu tidak cukup\n");
         else
         {
             printf("Pembayaran berhasil!\n");
-            if(jmlhByr > saveOrder->total)
+            if(jmlhByr > total)
             {
-                saveOrder->total = jmlhByr - saveOrder->total;
-                printf("Uang kamu sisa: Rp.%d\n", saveOrder->total);
+                total = jmlhByr - total;
+                printf("Uang kamu sisa: Rp.%d\n", total);
             }
-            saveOrder->total = 0;
+            total = 0;
         }
     }
 }
@@ -263,11 +331,17 @@ int main()
         case 1:
         {
             system("cls");
-            order();
+            readMenu();
             break;
         }
 
         case 2:
+        {
+            order();
+            break;
+        }
+
+        case 3:
         {
             system("cls");
             cart();
@@ -275,7 +349,7 @@ int main()
             break;
         }
 
-        case 3:
+        case 4:
         {
             system("cls");
             // TODO: Add patorjk.com ascii text
@@ -292,10 +366,9 @@ int main()
 
         default:
         {
-            //! Admin Menu is not finished, check the function
             break;
         }
         }
-    } while (menu != 3);
+    } while (menu != 4);
     return 0;
 }
