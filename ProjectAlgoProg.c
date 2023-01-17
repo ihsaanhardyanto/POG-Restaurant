@@ -291,8 +291,8 @@ void order()
     {
         if (strncasecmp(temp, list[i].name, strlen(temp)) == 0)
         {
-            strcpy(saveOrder[i].name, list[i].name);
-            saveOrder[i].price = list[i].price;
+            strcpy(saveOrder[sizeOrder].name, list[i].name);
+            saveOrder[sizeOrder].price = list[i].price;
             sizeOrder++;
         }
     }
@@ -311,6 +311,7 @@ void cart()
         printf("| %-3d | %-20s | %-10d |\n", i + 1, saveOrder[i].name, saveOrder[i].price);
         total += saveOrder[i].price;
     }
+
 
     printf("|_____|______________________|____________|\n");
     printf("| %-26s | %-10d |\n", "Total", total);
