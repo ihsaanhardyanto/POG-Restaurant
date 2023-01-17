@@ -186,7 +186,7 @@ void writeMenu(char *name, char *price)
 
     fprintf(fp, "%s#%s\n", name, price);
     fclose(fp);
-    printf("Menu has been added\n");
+    printf("Items added!\n");
     printf("Press ENTER to continue...");
     getchar();
 }
@@ -231,7 +231,7 @@ int mainMenu()
     system("cls");
     int menu = 0;
     welcome();
-    printf("\nXYZ Restaurant\n");
+    printf("\nPOG Restaurant\n");
     printf("1. Menu\n");
     printf("2. Order\n");
     printf("3. Cart\n");
@@ -343,7 +343,7 @@ void cart()
 
     if (sizeOrder == 0)
     {
-        printf("Cart kosong!"); getchar();
+        printf("Empty Cart!"); getchar();
         return;
     }
 
@@ -367,20 +367,21 @@ void cart()
 
     if(pilihan == 1)
     {
-        printf("\nMasukan jumlah uang\n");
+        printf("\nEnter the amount of money\n");
         printf(">> ");
         scanf("%d", &jmlhByr); getchar();
         if(total > jmlhByr)
         {
-            printf("\nUang kamu tidak cukup!\n"); getchar();
+            printf("\nYour balance insufficient!\n");
+            getchar();
         }
         else
         {
-            printf("\nPembayaran berhasil!\n");
+            printf("\nPayment Successful!\n");
             if(jmlhByr > total)
             {
                 total = jmlhByr - total;
-                printf("Uang kembalian kamu: Rp.%d\n", total);
+                printf("Your change: IDR%d\n", total);
 
                 for (i = 0; i < sizeOrder; i++)
                     saveOrder[i] = EmptyStruct;
@@ -476,7 +477,7 @@ int main()
         case 4:
         {
             system("cls");
-            printf("Terimakasih sudah berkunjung!"); getchar();
+            printf("Thankyou for coming!\n"); getchar();
             menu = 4;
             break;
         }
