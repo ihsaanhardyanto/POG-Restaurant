@@ -69,10 +69,10 @@ int sizeOrder = 0;
 
 void initMenu()
 {
-    FILE *fr;
-    fr = fopen("Menu.txt", "r");
+    FILE *fp;
+    fp = fopen("Menu.txt", "r");
 
-    if (!fr)
+    if (!fp)
     {
         printf("ERROR!");
         return;
@@ -80,7 +80,7 @@ void initMenu()
 
     char buff[MAX];
     int count = 0;
-    while (fgets(buff, MAX, fr) != NULL)
+    while (fgets(buff, MAX, fp) != NULL)
     {
         char *token = strtok(buff, "#");
         strcpy(list[count].name, token);
@@ -88,7 +88,7 @@ void initMenu()
         list[count].price = atoi(token);
         count++;
     }
-    fclose(fr);
+    fclose(fp);
     sizeMenu = count;
 }
 
@@ -191,6 +191,41 @@ void writeMenu(char *name, char *price)
     getchar();
 }
 
+void removeMenu(char *name)
+{
+    FILE *fp, *temp;
+        
+    fp = fopen("Menu.txt","r");
+    temp = fopen("temp.txt", "w");
+    
+    if (!fp)
+    {
+        printf("ERROR: file not found!"); getchar();
+        return;
+    }
+    
+    char buff[MAX];
+    char buff2[MAX];
+    while (fgets(buff, MAX, fp) != NULL)
+    {
+        strcpy(buff2, buff);
+        char *token = strtok(buff, "#");
+        if (strcasecmp(name, token) == 0)
+        {
+            printf("\nLine Removed!\n"); 
+            printf("Press ENTER to continue...");
+            getchar();
+        }
+        else fputs(buff2, temp);
+    }
+    
+    fclose(fp);
+    fclose(temp);
+
+    remove("Menu.txt");
+    rename("temp.txt", "Menu.txt");
+}
+
 int mainMenu()
 {
     system("cls");
@@ -223,25 +258,25 @@ int search(char *sub) {
 
     printf("\nResults:\n");
 
-    FILE *fr;
+    FILE *fp;
 
-    fr = fopen("Menu.txt","r");
+    fp = fopen("Menu.txt","r");
 
-    if (!fr)
+    if (!fp)
     {
         printf("ERROR");
         return 1;
     }
 
     char buff[MAX];
-    while (fgets(buff, MAX, fr) != NULL) {
+    while (fgets(buff, MAX, fp) != NULL) {
         char *token = strtok(buff, "#");
         
         strcpy(str[count], token);
         count++;
     }
 
-    fclose(fr);
+    fclose(fp);
 
     for (i = 0; i < count; i++)
     {
@@ -291,7 +326,7 @@ void order()
 
     for (i = 0; i < sizeMenu; i++)
     {
-        if (strncasecmp(temp, list[i].name, strlen(temp)) == 0)
+        if (strcasecmp(temp, list[i].name) == 0)
         {
             strcpy(saveOrder[sizeOrder].name, list[i].name);
             saveOrder[sizeOrder].price = list[i].price;
@@ -360,47 +395,54 @@ void cart()
 void adminMenu()
 {
     int menu2;
-    system("cls");
-    printf("Admin Menu\n");
-    printf("1. Add Menu\n");
-    printf("2. Remove Menu\n");
-    printf("3. Exit\n");
-    printf(">> ");
-    scanf("%d", &menu2);
-    getchar();
-    switch (menu2)
+    do
     {
-    case 1:
-    {
-        //! Write this in separate function
-        char name[MAX];
-        char price[MAX];
         system("cls");
-        printf("Menu Name: ");
-        scanf("%[^\n]", name);
+        printf("Admin Menu\n");
+        printf("1. Add Menu\n");
+        printf("2. Remove Menu\n");
+        printf("3. Exit\n");
+        printf(">> ");
+        scanf("%d", &menu2);
         getchar();
-        printf("Menu Price: ");
-        scanf("%s", price);
-        getchar();
-        writeMenu(name, price);
-        break;
-    }
+        switch (menu2)
+        {
+        case 1:
+        {
+            char name[MAX];
+            char price[MAX];
 
-    case 2:
-    {
-        // TODO: Add option to remove menu
-    }
+            system("cls");
+            printf("Menu Name: ");
+            scanf("%[^\n]", name); getchar();
+            printf("Menu Price: ");
+            scanf("%s", price); getchar();
 
-    case 3:
-    {
-        // TODO: Go back to the main menu
-    }
+            writeMenu(name, price);
+            break;
+        }
 
-    default:
-    {
-        break;
-    }
-    }
+        case 2:
+        {
+            char name[MAX];
+            printf("Menu to remove: ");
+            scanf("%[^\n]", name); getchar();
+            
+            removeMenu(name);
+        }
+
+        case 3:
+        {
+            return;
+        }
+
+        default:
+        {
+            break;
+        }
+        }
+    } while (menu2 != 3);
+    
 }
 
 int main()
@@ -434,8 +476,7 @@ int main()
         case 4:
         {
             system("cls");
-            printf("Terimakasih sudah berkunjung!");
-            getchar();
+            printf("Terimakasih sudah berkunjung!"); getchar();
             menu = 4;
             break;
         }
