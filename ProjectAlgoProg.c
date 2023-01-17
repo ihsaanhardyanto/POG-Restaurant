@@ -97,7 +97,7 @@ void readMenu()
     printf(" _________________________________________\n");
     printf("| %-3s | %-20s | %-10s |\n", "No", "Name", "Price");
     printf("|_____|______________________|____________|\n");
-    for (i = 0; i < sizeMenu; i++)
+    for (i = 0; i < sizeMenu || i >= 9; i++)
     {
         printf("| %-3d | %-20s | %-10d |\n", i + 1, list[i].name, list[i].price);
     }
@@ -345,14 +345,12 @@ int main()
         {
             system("cls");
             cart();
-            // TODO: Check ordered food and total price
             break;
         }
 
         case 4:
         {
             system("cls");
-            // TODO: Add patorjk.com ascii text
             printf("Terimakasih sudah berkunjung!");
             getchar();
             menu = 4;
