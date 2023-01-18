@@ -304,9 +304,9 @@ void order()
     char ch;
     char temp[MAX] = {'\0'};
     search(temp);
-    for (i = 0; (ch = getch()) != 13; i++)
+    for (i = 0; (ch = getch()) != '\r'; i++)
     {
-        if (ch != 8)
+        if (ch != '\b')
         {
             temp[i] = ch;
         }
