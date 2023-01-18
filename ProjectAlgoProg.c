@@ -372,7 +372,7 @@ void cart()
         scanf("%d", &jmlhByr); getchar();
         if(total > jmlhByr)
         {
-            printf("\nYour balance insufficient!\n");
+            printf("\nYour balance is insufficient!\n");
             getchar();
         }
         else
@@ -477,7 +477,7 @@ int main()
         case 4:
         {
             system("cls");
-            printf("Thankyou for coming!\n"); getchar();
+            printf("Thank you for coming!\n"); getchar();
             menu = 4;
             break;
         }
