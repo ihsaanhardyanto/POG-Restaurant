@@ -5,35 +5,44 @@
 #include <conio.h>
 #include <ctype.h>
 
+// alias
 #define MAX 255
 
+// Menyimpan semua barang yang ada di menu
 struct menuList
 {
     char name[MAX];
     int price;
 } list[MAX];
 
+// menyimpan semua barang yang dipilih saat mengorder
 struct saveOrder
 {
     char name[MAX];
     int price;
 } saveOrder[MAX];
 
+// membuat struct kosong agak dapat mengkosongkan structnya
 static const struct saveOrder EmptyStruct;
 
+// comparator untuk qsort struct yang mengsort secara ascending
 int comparator(const void *a, const void *b)
 {
     struct menuList *listA = (struct menuList *)a;
     struct menuList *listB = (struct menuList *)b;
 
+    // sort descending: -strcmp(listA->name, listB->name)
     return strcmp(listA->name, listB->name);
 }
 
+// comparator untuk qsort string yang mengsort secara ascending 
 int stringComparator(const void *a, const void *b)
 {
     return strcmp((char *)a, (char *)b);
 }
 
+// strstr tetapi tidak case sensitive
+// untuk mencari substring dalam string
 char *strcasestr(const char *str, const char *pattern) {
     size_t i;
 
@@ -53,6 +62,7 @@ char *strcasestr(const char *str, const char *pattern) {
     return NULL;
 }
 
+// untuk Welcome
 void welcome()
 {
     puts(" __          __  _                          _ ");
@@ -63,10 +73,12 @@ void welcome()
     puts("     \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___(_)");
 }
 
-int i, j, k; 
+// global variable
+int i, j, k;
 int sizeMenu = 0;
 int sizeOrder = 0;
 
+// memasukan semua data yang ada di menu ke structnya
 void initMenu()
 {
     FILE *fp;
@@ -92,6 +104,7 @@ void initMenu()
     sizeMenu = count;
 }
 
+// print menu dari file
 void readMenu()
 {
     int page = 1;
@@ -173,59 +186,7 @@ void readMenu()
     }
 }
 
-void writeMenu(char *name, char *price)
-{
-    FILE *fp;
-    fp = fopen("Menu.txt", "a");
-
-    if (!fp)
-    {
-        printf("ERROR!");
-        return;
-    }
-
-    fprintf(fp, "%s#%s\n", name, price);
-    fclose(fp);
-    printf("Items added!\n");
-    printf("Press ENTER to continue...");
-    getchar();
-}
-
-void removeMenu(char *name)
-{
-    FILE *fp, *temp;
-        
-    fp = fopen("Menu.txt","r");
-    temp = fopen("temp.txt", "w");
-    
-    if (!fp)
-    {
-        printf("ERROR: file not found!"); getchar();
-        return;
-    }
-    
-    char buff[MAX];
-    char buff2[MAX];
-    while (fgets(buff, MAX, fp) != NULL)
-    {
-        strcpy(buff2, buff);
-        char *token = strtok(buff, "#");
-        if (strcasecmp(name, token) == 0)
-        {
-            printf("\nLine Removed!\n"); 
-            printf("Press ENTER to continue...");
-            getchar();
-        }
-        else fputs(buff2, temp);
-    }
-    
-    fclose(fp);
-    fclose(temp);
-
-    remove("Menu.txt");
-    rename("temp.txt", "Menu.txt");
-}
-
+// main menunya
 int mainMenu()
 {
     system("cls");
@@ -243,6 +204,7 @@ int mainMenu()
     return menu;
 }
 
+// untuk searching dari file yang memiliki substring sama dengan yang dimasukan
 int search(char *sub) {
     char str[MAX][MAX];
     char found[MAX][MAX];
@@ -297,6 +259,7 @@ int search(char *sub) {
     return 0;
 }
 
+// setiap kali menulis akan disearch substringnya
 void order()
 {
     system("cls");
@@ -335,6 +298,33 @@ void order()
     }
 }
 
+//? alternative order menggunakan binary search
+// void order()
+// {
+//     char order[MAX];
+//     printf("Insert food name: ");
+//     scanf("%[^\n]", order);
+//     getchar();
+
+//     struct menuList key = {order, 0};
+//     struct menuList *result = bsearch(order, list->name, sizeMenu, sizeof(struct menuList), comparator);
+
+//     if (result == NULL)
+//     {
+//         printf("Element not found");
+//         getchar();
+//     }
+//     else
+//     {
+//         strcpy(saveOrder[sizeOrder].name, result->name);
+//         saveOrder[sizeOrder].price = result->price;
+//         sizeOrder++;
+//         getchar();
+//     }
+// }
+//? end
+
+// mengecek semua barang yang sudah diorder di cart
 void cart()
 {
     int pilihan;
@@ -393,6 +383,62 @@ void cart()
     }
 }
 
+// menambahkan menu ke file
+void writeMenu(char *name, char *price)
+{
+    FILE *fp;
+    fp = fopen("Menu.txt", "a");
+
+    if (!fp)
+    {
+        printf("ERROR!");
+        return;
+    }
+
+    fprintf(fp, "%s#%s\n", name, price);
+    fclose(fp);
+    printf("Items added!\n");
+    printf("Press ENTER to continue...");
+    getchar();
+}
+
+// menghapus menu dari file
+void removeMenu(char *name)
+{
+    FILE *fp, *temp;
+        
+    fp = fopen("Menu.txt","r");
+    temp = fopen("temp.txt", "w");
+    
+    if (!fp)
+    {
+        printf("ERROR: file not found!"); getchar();
+        return;
+    }
+    
+    char buff[MAX];
+    char buff2[MAX];
+    while (fgets(buff, MAX, fp) != NULL)
+    {
+        strcpy(buff2, buff);
+        char *token = strtok(buff, "#");
+        if (strcasecmp(name, token) == 0)
+        {
+            printf("\nLine Removed!\n"); 
+            printf("Press ENTER to continue...");
+            getchar();
+        }
+        else fputs(buff2, temp);
+    }
+    
+    fclose(fp);
+    fclose(temp);
+
+    remove("Menu.txt");
+    rename("temp.txt", "Menu.txt");
+}
+
+// admin panel
 void adminMenu()
 {
     int menu2;
@@ -443,7 +489,6 @@ void adminMenu()
         }
         }
     } while (menu2 != 3);
-    
 }
 
 int main()
@@ -485,6 +530,7 @@ int main()
         case 123:
         {
             adminMenu();
+            initMenu();
             break;
         }
 
