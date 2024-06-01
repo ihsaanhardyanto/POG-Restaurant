@@ -53,10 +53,15 @@ Exits the program with a farewell message.
 Prompts the admin to enter the name and price of a new menu item.
 Adds the new item to the Menu.txt file.
 
-## Remove Menu
+### Remove Menu
 
 Prompts the admin to enter the name of the menu item to be removed.
 Removes the specified item from the Menu.txt file.
 
-## Exit
+### Exit
 Exits the admin menu and returns to the main menu.
+
+## Additional Details
+### File Handling
+The Menu.txt file is used to store menu items with their names and prices.
+The program reads from this file to display menu items and writes to it when adding or removing items.
