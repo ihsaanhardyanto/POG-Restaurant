@@ -65,3 +65,12 @@ Exits the admin menu and returns to the main menu.
 ### File Handling
 The Menu.txt file is used to store menu items with their names and prices.
 The program reads from this file to display menu items and writes to it when adding or removing items.
+
+### Sorting and Searching
+
+Menu items are sorted alphabetically using qsort.
+The search functionality is implemented to be case-insensitive.
+
+### User Interface
+The console-based UI uses simple text prompts and commands for navigation.
+Pagination and real-time search enhance the user experience.
